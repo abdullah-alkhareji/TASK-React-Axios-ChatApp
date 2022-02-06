@@ -1,32 +1,45 @@
+import { observer } from "mobx-react";
 import React, { useState } from "react";
 import ChatRoomItem from "./ChatRoomItem";
 import CreateRoomModal from "./CreateRoomModal";
 
-function ChatRoomsList({ rooms }) {
-  const [isOpen, setIsOpen] = useState(false);
+function ChatRoomsList({ rooms, createRoom, deleteRoom, updateRoom }) {
+	const [isOpen, setIsOpen] = useState(false);
 
-  const closeModal = () => setIsOpen(false);
+	const closeModal = () => setIsOpen(false);
 
-  const openModal = () => setIsOpen(true);
+	const openModal = () => setIsOpen(true);
 
-  const roomsList = rooms.map((room) => {
-    return <ChatRoomItem room={room} key={room.id} />;
-  });
-  return (
-    <div className="main__chatlist">
-      <button className="btn">
-        <i className="fa fa-plus"></i>
-        <span onClick={openModal}>New room</span>
-        <CreateRoomModal isOpen={isOpen} closeModal={closeModal} />
-      </button>
-      <center>
-        <div className="chatlist__heading">
-          <h2>Chat rooms</h2>
-        </div>
-      </center>
+	const roomsList = rooms.map(room => {
+		return (
+			<ChatRoomItem
+				room={room}
+				roomId={room.id}
+				key={room.id}
+				// deleteRoom={deleteRoom}
+				// updateRoom={updateRoom}
+			/>
+		);
+	});
+	return (
+		<div className='main__chatlist'>
+			<button className='btn'>
+				<i className='fa fa-plus'></i>
+				<span onClick={openModal}>New room</span>
+				<CreateRoomModal
+					isOpen={isOpen}
+					closeModal={closeModal}
+					createRoom={createRoom}
+				/>
+			</button>
+			<center>
+				<div className='chatlist__heading'>
+					<h2>Chat rooms</h2>
+				</div>
+			</center>
 
-      <div className="chatlist__items">{roomsList}</div>
-    </div>
-  );
+			<div className='chatlist__items'>{roomsList}</div>
+		</div>
+	);
 }
-export default ChatRoomsList;
+export default observer(ChatRoomsList);
