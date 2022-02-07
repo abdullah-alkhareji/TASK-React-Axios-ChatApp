@@ -10,37 +10,42 @@ import roomsStore from "./stores/rooms.store";
 import { observer } from "mobx-react";
 
 const App = () => {
-	let rooms = roomsStore.rooms;
-	useEffect(() => {
-		roomsStore.fetchRooms();
-	}, []);
+  let rooms = roomsStore.rooms;
+  useEffect(() => {
+    roomsStore.fetchRooms();
+  }, []);
 
-	const addChat = async (roomId, msg) => {
-		await axios.post(
-			`https://coded-task-axios-be.herokuapp.com/rooms/msg/${roomId}`,
-			msg
-		);
-		try {
-		} catch (error) {
-			console.log(error);
-		}
-	};
+  const addChat = async (roomId, msg) => {
+    await axios.post(
+      `https://coded-task-axios-be.herokuapp.com/rooms/msg/${roomId}`,
+      msg
+    );
+    roomsStore.rooms = roomsStore.rooms.filter((room) =>
+      room.id === roomId
+        ? (roomsStore.messages = [...room.messages, msg])
+        : room
+    );
+    try {
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-	return (
-		<div className='__main'>
-			<div className='main__chatbody'>
-				<center>
-					<Routes>
-						<Route
-							path='/room/:roomSlug'
-							element={<ChatRoom rooms={rooms} addChat={addChat} />}
-						/>
-						<Route exact path='/' element={<ChatRoomsList rooms={rooms} />} />
-					</Routes>
-				</center>
-			</div>
-		</div>
-	);
+  return (
+    <div className="__main">
+      <div className="main__chatbody">
+        <center>
+          <Routes>
+            <Route
+              path="/room/:roomSlug"
+              element={<ChatRoom rooms={rooms} addChat={addChat} />}
+            />
+            <Route exact path="/" element={<ChatRoomsList rooms={rooms} />} />
+          </Routes>
+        </center>
+      </div>
+    </div>
+  );
 };
 
 export default observer(App);
